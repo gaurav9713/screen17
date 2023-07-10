@@ -15,17 +15,6 @@ db_name = env['DB_NAME']
 db_port = env['DB_PORT']
 
 
-db_connection_string = f'mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
-engine = sqlalchemy.create_engine(db_connection_string)
-
-# print(engine)
-
-# engine.connect()
-
-folder_path = 'yellow_tripdata'
-
-file_paths = glob.glob(os.path.join(folder_path, '*'))
-
 def ingest_data(df_chunk):
     try:
         engine = sqlalchemy.create_engine(db_connection_string)
@@ -45,18 +34,29 @@ def create_chunks(file_name):
 
     return df_chunks
 
-threads = []
-for file in file_paths:
-    chunks = create_chunks(file)
-    for chunk in chunks:
-        process_thread = threading.Thread(
-            target=ingest_data,
-            args=(chunk,)
-        )
-        threads.append(process_thread)
-        process_thread.start()
+if '__name__' == '__main__':
+    db_connection_string = f'mysql+pymysql://{db_username}:{db_password}@{db_host}:{db_port}/{db_name}'
+    engine = sqlalchemy.create_engine(db_connection_string)
 
-for thread in threads:
-    thread.join()
+    folder_path = 'yellow_tripdata'
 
+    file_paths = glob.glob(os.path.join(folder_path, '*'))
+
+    threads = []
+    for file in file_paths:
+        chunks = create_chunks(file)
+        for chunk in chunks:
+            process_thread = threading.Thread(
+                target=ingest_data,
+                args=(chunk,)
+            )
+            threads.append(process_thread)
+            process_thread.start()
+
+    for thread in threads:
+        thread.join()
+
+    for file in file_paths:
+        os.remove(file)
+    os.rmdir(folder_path)
 
