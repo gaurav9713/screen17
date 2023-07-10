@@ -1,4 +1,4 @@
 env/
-yellow_tripdata/
+yellow_tripdata*/
 __pycache__/
 .env
