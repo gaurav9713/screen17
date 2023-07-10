@@ -35,7 +35,7 @@ def calc_avg():
     for file in file_paths:
         df = pd.read_parquet(file, engine='pyarrow')
 
-        print(f'Average total_amount for the selected month and year are: ${round(df["total_amount"].mean(),2)}')
+        print(f'Average total_amount for the selected month and year are: ${round(df["trip_distance"].mean(),2)}')
 
         os.remove(file)
 
