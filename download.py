@@ -24,7 +24,7 @@ if __name__ == '__main__':
     folder = 'yellow_tripdata'
     os.mkdir(folder)
 
-    for url in urls_to_download[:5]:
+    for url in urls_to_download:
         
         process_thread = threading.Thread(
             target=download_file,
